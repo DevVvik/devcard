@@ -4,6 +4,14 @@ version = "0.0.1"
 
 [dependencies]
 Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/testnet" }
+[dependencies]
+{{package_name}} = { git = "https://github.com/move-lang/move-examples.git", rev = "main", address_mapping = "my_addresses" }
 
 [addresses]
-build = "0x0"
+{{package_name}} = "0x1"
+
+[dev-addresses]
+{{package_name}} = "0x1"
+
+[scripts]
+script_name = "devcard::script"

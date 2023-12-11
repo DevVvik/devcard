@@ -175,7 +175,54 @@ module build::devcard {
 
        )
 
+    }  
+    
+    struct PortfolioUpdated {
+    name: vector<u8>,
+    owner: address,
+    new_portfolio: string,
+}
+
+public(script) fun main(account: &signer, devhub: &mut T::DevHub, new_portfolio: vector<u8>, id: u64) {
+    let user_card = object_table::borrow_mut(&mut devhub.cards, id);
+    assert!(Signer::address_of(account) == user_card.owner, NO_THE_OWNER);
+    let old_value = option::swap_or_fill(&mut user_card.portfolio, string::utf8(new_portfolio));
+
+    event::emit(
+        PortfolioUpdated{
+            name: user_card.name,
+            owner: user_card.owner,
+            new_portfolio: string::utf8(new_portfolio)
+        }
+    );
+
+    _ = old_value;
+
+
     }
+    script {
+    use 0x1::Event;
+    use 0x1::Vector;
+
+    use {{package_name}}::*;
+
+    fun update_portfolio(account: &signer, devhub: &mut T::DevHub, new_portfolio: vector<u8>, id: u64) {
+        let user_card = object_table::borrow_mut(&mut devhub.cards, id);
+        assert!(Signer::address_of(account) == user_card.owner, NO_THE_OWNER);
+        let old_value = option::swap_or_fill(&mut user_card.portfolio, string::utf8(new_portfolio));
+
+        event::emit(
+            PortfolioUpdated{
+                name: user_card.name,
+                owner: user_card.owner,
+                new_portfolio: string::utf8(new_portfolio)
+            }
+        );
+
+        _ = old_value;
+    }
+}
+    
 
 }
          
